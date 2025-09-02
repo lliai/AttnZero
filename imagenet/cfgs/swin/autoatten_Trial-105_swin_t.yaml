@@ -1,0 +1,14 @@
+MODEL:
+  TYPE: autoatten_swin
+  NAME: autoatten_swin_tiny
+  DROP_PATH_RATE: 0.2
+  SWIN:
+    EMBED_DIM: 96
+    DEPTHS: [ 2, 2, 6, 2 ]
+    NUM_HEADS: [ 3, 6, 12, 24 ]
+    WINDOW_SIZE: 56
+  STAGE_ATTN_TYPE: AAAB
+  AT:
+    GRAPH_TYPE: i3n303
+    UNARY_OP: [[16], [0, 13], [0, 25], [6], [0], [25, 0]]
+    BINARY_OP: [6, 3, 2]

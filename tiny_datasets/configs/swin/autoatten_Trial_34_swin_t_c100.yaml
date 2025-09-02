@@ -1,0 +1,53 @@
+MODEL:
+  TYPE: AutoAtten_swin_tiny
+  NUM_CLASSES: 100
+  DROP_PATH_RATE: 0.2
+  STAGE_ATTN_TYPE: AABB
+SWIN:
+  EMBED_DIM: 96
+  DEPTHS: [ 2, 2, 6, 2 ]
+  NUM_HEADS: [ 3, 6, 12, 24 ]
+  WINDOW_SIZE: 56
+AT:
+  binary_op:
+  - 2
+  - 0
+  - 2
+  graph_type: i3n305
+  unary_op:
+  - - 20
+    - 0
+  - - 0
+  - - 0
+    - 2
+  - - 14
+    - 0
+  - - 6
+    - 0
+  - - 0
+OPTIM:
+  OPTIMIZER: adamw
+  BASE_LR: 5.0e-4
+  MIN_LR: 5.0e-6
+  LR_POLICY: cos
+  MAX_EPOCH: 300
+  WEIGHT_DECAY: 0.05
+  WARMUP_FACTOR: 0.001
+  WARMUP_EPOCHS: 20
+TRAIN:
+  DATASET: cifar100
+  SPLIT: train
+  BATCH_SIZE: 128
+TEST:
+  DATASET: cifar100
+  SPLIT: test
+  BATCH_SIZE: 200
+NUM_GPUS: 1
+DATA_LOADER:
+  NUM_WORKERS: 4
+CUDNN:
+  BENCHMARK: False
+
+
+
+

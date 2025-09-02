@@ -1,0 +1,173 @@
+import random
+from typing import TypeVar, Union
+
+import torch
+import torch.nn.functional as F
+
+Scalar = TypeVar('Scalar')
+Vector = TypeVar('Vector')
+Matrix = TypeVar('Matrix')
+
+ALLTYPE = Union[Union[Scalar, Vector], Matrix]
+
+BINARY_KEYS = ('element_wise_sum', 'pairwise_distance',
+               'element_wise_product', 'matrix_multiplication', 'cosine_similarity',
+               'einsum1', 'einsum2', 'einsum3', 'einsum4', 'cat')
+
+
+
+
+def sample_binary_key_by_prob(probability=None):
+    # if probability is None:
+    #     # the probability from large to small
+    #     probability = [0.6, 0.3, 0.05, 0.05]
+    # return random.choices(
+    #     list(range(len(BINARY_KEYS))), weights=probability, k=1)[0]
+    return random.choices(
+        list(range(len(BINARY_KEYS))), k=1)[0]
+
+
+# binary operator
+
+def Einsum1(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    b1, h1, n1, d1 = A.shape
+    b2, h2, n2, d2 = B.shape
+    if b1 == b2 and h1 == h2 and n1 == n2:
+        return torch.einsum('bhnd,bhne->bhde', A, B)
+    if b1 == b2 and h1 == h2 and d1 == d2:
+        return torch.einsum('bhnd,bhed->bhne', A, B)
+    raise
+
+
+def Einsum2(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    b1, h1, n1, d1 = A.shape
+    b2, h2, n2, d2 = B.shape
+    if b1 == b2 and h1 == h2 and n1 == n2:
+        return torch.einsum('bhnd,bhne->bhed', A, B)
+    if b1 == b2 and h1 == h2 and d1 == d2:
+        return torch.einsum('bhnd,bhed->bhen', A, B)
+    raise
+
+
+def Einsum3(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    return torch.einsum('bnsd,bnd->bns', A, B)
+
+
+def Einsum4(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    return torch.einsum('bti,bi->bt', A, B)
+
+
+
+
+def element_wise_sum(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    return A + B
+
+
+def element_wise_mean(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    return (A + B) / 2
+
+
+# SCALAR_DIFF_OP
+
+def cat(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    return torch.cat((A, B), dim=-1)
+
+
+
+def element_wise_difference(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    return A - B
+
+
+def element_wise_product(A: ALLTYPE, B: ALLTYPE) -> ALLTYPE:
+    return A * B
+
+
+def matrix_multiplication(A: Matrix, B: Matrix):
+    return A @ B
+
+
+def lesser_than(A: ALLTYPE, B: ALLTYPE) -> bool:
+    return (A < B).float()
+
+
+def greater_than(A: ALLTYPE, B: ALLTYPE) -> bool:
+    return (A > B).float()
+
+
+def equal_to(A: ALLTYPE, B: ALLTYPE) -> bool:
+    return (A == B).float()
+
+
+def hamming_distance(A: ALLTYPE, B: ALLTYPE) -> Scalar:
+    value = torch.tensor([0], dtype=A.dtype)
+    A = torch.heaviside(A, values=value)
+    B = torch.heaviside(B, values=value)
+    return sum(A != B)
+
+
+def pairwise_distance(A: Matrix, B: Matrix) -> Vector:
+    return F.pairwise_distance(A, B, p=2)
+
+
+def kl_divergence(A: ALLTYPE, B: ALLTYPE) -> Scalar:
+    return torch.nn.KLDivLoss('batchmean')(A, B)
+
+
+def cosine_similarity(A: Matrix, B: Matrix) -> Scalar:
+    A = A.reshape(A.shape[0], -1)
+    B = A.reshape(B.shape[0], -1)
+    C = torch.nn.CosineSimilarity()(A, B)
+    return torch.sum(C)
+
+
+def mse_loss(A: ALLTYPE, B: ALLTYPE) -> Scalar:
+    return F.mse_loss(A, B)
+
+
+def l1_loss(A: ALLTYPE, B: ALLTYPE) -> Scalar:
+    return F.l1_loss(A, B)
+
+
+def binary_operation(A, B, idx=None):
+    # 10
+    binary_keys = [
+        'element_wise_sum',
+        'element_wise_difference',
+        'element_wise_product',
+        'lesser_than',
+        'greater_than',
+        'equal_to',
+        'hamming_distance',
+        'kl_divergence',
+        'cosine_similarity',
+        'matrix_multiplication',
+        'pairwise_distance',
+        'l1_loss',
+        'mse_loss',
+    ]
+    if idx is None:
+        idx = random.choice(range(len(binary_keys)))
+
+    assert idx < len(binary_keys)
+
+    binaries = {
+        'element_wise_sum': element_wise_sum,
+        'element_wise_difference': element_wise_difference,
+        'element_wise_product': element_wise_product,
+        'matrix_multiplication': matrix_multiplication,
+        'lesser_than': lesser_than,
+        'greater_than': greater_than,
+        'equal_to': equal_to,
+        'hamming_distance': hamming_distance,
+        'kl_divergence': kl_divergence,
+        'cosine_similarity': cosine_similarity,
+        'pairwise_distance': pairwise_distance,
+        'l1_loss': l1_loss,
+        'mse_loss': mse_loss,
+        'einsum1': Einsum1,
+        'einsum2': Einsum2,
+        'einsum3': Einsum3,
+        'einsum4': Einsum4,
+        'cat': cat
+    }
+    return binaries[BINARY_KEYS[idx]](A, B)

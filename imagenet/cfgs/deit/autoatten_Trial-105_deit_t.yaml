@@ -1,0 +1,10 @@
+DATA:
+  BATCH_SIZE: 512
+MODEL:
+  TYPE: AutoAtten_deit_tiny
+  NAME: AutoAtten_deit_tiny
+  DROP_PATH_RATE: 0.0
+  AT:
+    GRAPH_TYPE: i3n303
+    UNARY_OP: [[16], [0, 13], [0, 25], [6], [0], [25, 0]]
+    BINARY_OP: [6, 3, 2]

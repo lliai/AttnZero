@@ -1,0 +1,23 @@
+DATA:
+  IMG_SIZE: 224
+  BATCH_SIZE: 64
+
+TRAIN:
+  WEIGHT_DECAY: 0.05
+  EPOCHS: 300
+  WARMUP_EPOCHS: 5
+  COOLDOWN_EPOCHS: 10
+  BASE_LR: 5e-4
+  WARMUP_LR: 1e-6
+  MIN_LR: 1e-5
+  CLIP_GRAD: 1.0
+
+MODEL:
+  TYPE: AutoAtten_pvt_large
+  NAME: AutoAtten_pvt_large
+  DROP_PATH_RATE: 0.3
+  STAGE_ATTN_TYPE: AAAA
+  AT:
+    GRAPH_TYPE: i3n303
+    UNARY_OP: [[16], [0, 13], [0, 25], [6], [0], [25, 0]]
+    BINARY_OP: [6, 3, 2]

@@ -1,0 +1,26 @@
+DATA:
+  BATCH_SIZE: 32
+  IMG_SIZE: 384
+MODEL:
+  TYPE: autoatten_swin
+  NAME: autoatten_swin_base_384
+  DROP_PATH_RATE: 0.5
+  SWIN:
+    EMBED_DIM: 128
+    DEPTHS: [ 2, 2, 18, 2 ]
+    NUM_HEADS: [ 4, 8, 16, 32 ]
+    WINDOW_SIZE: 96
+  STAGE_ATTN_TYPE: AAMB2
+  AT:
+    GRAPH_TYPE: i3n303
+    UNARY_OP: [[16], [0, 13], [0, 25], [6], [0], [25, 0]]
+    BINARY_OP: [6, 3, 2]
+TRAIN:
+  EPOCHS: 30
+  WARMUP_EPOCHS: 5
+  WEIGHT_DECAY: 1e-8
+  BASE_LR: 2e-05
+  WARMUP_LR: 2e-08
+  MIN_LR: 2e-07
+TEST:
+  CROP: False

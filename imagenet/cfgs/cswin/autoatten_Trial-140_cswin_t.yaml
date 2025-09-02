@@ -1,0 +1,23 @@
+DATA:
+  IMG_SIZE: 224
+  BATCH_SIZE: 128
+
+TRAIN:
+  WEIGHT_DECAY: 0.05
+  EPOCHS: 300
+  WARMUP_EPOCHS: 20
+  COOLDOWN_EPOCHS: 10
+  BASE_LR: 5e-4
+  WARMUP_LR: 1e-6
+  MIN_LR: 1e-5
+  CLIP_GRAD: None
+
+MODEL:
+  TYPE: AutoAtten_CSWin_64_24181_tiny_224
+  NAME: AutoAtten_CSWin_tiny
+  DROP_PATH_RATE: 0.2
+  STAGE_ATTN_TYPE: AABB
+  AT:
+    GRAPH_TYPE: i3n302
+    UNARY_OP: [[16], [15], [0, 5], [9, 0], [20], [25]]
+    BINARY_OP: [5, 5, 0]

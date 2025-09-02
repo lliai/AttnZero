@@ -1,0 +1,81 @@
+AT:
+  binary_op:
+  - 6
+  - 3
+  - 2
+  graph_type: i3n303
+  unary_op:
+  - - 16
+  - - 0
+    - 13
+  - - 0
+    - 25
+  - - 6
+  - - 0
+  - - 25
+    - 0
+AUTOFORMER:
+  DEPTH: 12
+  HIDDEN_DIM: 192
+  MLP_RATIO:
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  NUM_HEADS:
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+CUDNN:
+  BENCHMARK: false
+Complex:
+  flops: 1.08
+  param: 5.53
+DATA_LOADER:
+  NUM_WORKERS: 4
+MODEL:
+  NUM_CLASSES: 100
+  TYPE: AutoFormer
+NUM_GPUS: 1
+OPTIM:
+  BASE_LR: 0.0005
+  LR_POLICY: cos
+  MAX_EPOCH: 300
+  MIN_LR: 5.0e-06
+  OPTIMIZER: adamw
+  WARMUP_EPOCHS: 20
+  WARMUP_FACTOR: 0.001
+  WEIGHT_DECAY: 0.05
+OUT_DIR: work_dirs/GT/Trial_105_deit_c100
+TEST:
+  BATCH_SIZE: 200
+  DATASET: cifar100
+  SPLIT: test
+TRAIN:
+  BATCH_SIZE: 128
+  DATASET: cifar100
+  SPLIT: train
+TRANSFORMER:
+  ATTENTION_DROP_RATE: 0.0
+  DEPTH: 13
+  DROP_PATH_RATE: 0.1
+  DROP_RATE: 0.0
+  HIDDEN_DIM: 192
+  PATCH_SIZE: 16
